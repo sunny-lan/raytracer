@@ -42,7 +42,13 @@ for(int i = 0; i < 25; i++)
         < 0.8 => new Lambertian(color),
         _ => new Metal(color),
     };
-    world.Objects.Add(new Sphere(offset + center, Util.rng.NextDouble()*0.5+0.1, mat));
+
+    var sphere = new Sphere(offset + center, Util.rng.NextDouble() * 0.5 + 0.1, mat);
+    world.Objects.Add(Util.rng.NextDouble() switch
+    {
+        < 0.3 => new Volume(sphere, Util.rng.NextDouble()*10, new VolumeMaterial(color)),
+        _ => sphere,
+    });
 }
 
 Vector3 RayColor(Ray r, int depth)
