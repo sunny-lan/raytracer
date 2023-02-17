@@ -15,4 +15,9 @@ internal struct Ray
 
     public Vector3 At(double t) => Position + Direction * t;
 
+    // Finds t that p = P + Dt
+    public double T(Vector3 p)
+    {
+        return Vector3.Dot(p - Position, Direction) / Direction.Length();
+    }
 }

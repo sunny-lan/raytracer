@@ -28,7 +28,7 @@ internal static class Util
     }
 
 
-    public static readonly Random rng = new Random();
+    public static readonly Random rng = new Random(69420);
 
     public static Vector3 RandomV3()
     {

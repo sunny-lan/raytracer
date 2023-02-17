@@ -22,7 +22,7 @@ internal class BVH : IHasBoundingBox
 
             int mid = objs.Length / 2;
             left = new BVH(objs.Slice(0, mid));
-            right = new BVH(objs.Slice(mid + 1));
+            right = new BVH(objs.Slice(mid));
         }
 
         BoundingBox = left.BoundingBox | right.BoundingBox;

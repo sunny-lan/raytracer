@@ -7,12 +7,27 @@ internal class Triangle : IHasBoundingBox
     readonly Matrix4x4 backward, forward;
     readonly Vector3 normal;
     readonly IMaterial material;
+    readonly bool backface;
 
-    public Triangle(Vector3 a, Vector3 b, Vector3 c, IMaterial material)
+    Triangle(Matrix4x4 backward, Matrix4x4 forward, Vector3 normal, IMaterial material, AABB boundingBox, bool backface = true)
+    {
+        this.backward = backward;
+        this.forward = forward;
+        this.normal = normal;
+        this.material = material;
+        BoundingBox = boundingBox;
+        this.backface = backface;
+    }
+
+    public static Triangle? Make(Vector3 a, Vector3 b, Vector3 c, IMaterial material)
     {
         // Baldwin intersection method
         Vector3 ba = b - a, ca = c - a;
-        normal = Vector3.Cross(ba, ca);
+        if (ba.NearZero() || ca.NearZero()) return null;
+
+        Vector3 normal = Vector3.Cross(ba, ca);
+        if (normal.NearZero()) return null;
+        normal = normal.Normalized();
 
         Vector3 free = new(1, 0, 0);
         if (Math.Abs(normal.Y) > Math.Abs(normal.X))
@@ -20,21 +35,21 @@ internal class Triangle : IHasBoundingBox
         if (Math.Abs(normal.Z) > Math.Abs(normal.Y) && Math.Abs(normal.Z) > Math.Abs(normal.X))
             free = new(0, 0, 1);
 
-        forward = new(
+        Matrix4x4 forward = new(
             ba.X, ca.X, free.X, a.X,
             ba.Y, ca.Y, free.Y, a.Y,
             ba.Z, ca.Z, free.Z, a.Z,
             0, 0, 0, 1
         );
+        forward = Matrix4x4.Transpose(forward);
 
-        if (!Matrix4x4.Invert(forward, out backward))
+        if (!Matrix4x4.Invert(forward, out var backward))
             throw new ArgumentException("Could not invert triangle transform");
 
-        BoundingBox = new(
+        return new(backward, forward, normal, material, new(
             Util.Min(a, b, c),
             Util.Max(a, b, c)
-        );
-        this.material = material;
+        ));
     }
 
     public AABB BoundingBox { get; }
@@ -56,12 +71,13 @@ internal class Triangle : IHasBoundingBox
 
         // Check within triangle
         if (
+            tsol >= tmin && tsol <= tmax &&
             x is >= 0 and <= 1 &&
             y is >= 0 and <= 1 &&
             x + y <= 1)
         {
-            rec.T = tsol; //does this work??
-            rec.Position = r.At(rec.T);
+            rec.Position = r.At(tsol);
+            rec.T = tsol;
             rec.SetFaceNormal(r, normal);
             rec.Material = material;
             return true;
