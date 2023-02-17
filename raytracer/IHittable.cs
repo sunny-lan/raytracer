@@ -9,6 +9,7 @@ struct HitInfo
     public Vector3 Position;
     public bool FrontFace;
     public IMaterial Material;
+    public Vector2 uv;
 
     public void SetFaceNormal(in Ray r, in Vector3 outNormal)
     {

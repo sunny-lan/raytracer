@@ -7,19 +7,23 @@ internal class Triangle : IHasBoundingBox
     readonly Matrix4x4 backward, forward;
     readonly Vector3 normal;
     readonly IMaterial material;
-    readonly bool backface;
+    readonly Vector2[] uvs;
 
-    Triangle(Matrix4x4 backward, Matrix4x4 forward, Vector3 normal, IMaterial material, AABB boundingBox, bool backface = true)
+    Triangle(Matrix4x4 backward, Matrix4x4 forward, Vector3 normal, IMaterial material, AABB boundingBox, Vector2[] uvs)
     {
         this.backward = backward;
         this.forward = forward;
         this.normal = normal;
         this.material = material;
         BoundingBox = boundingBox;
-        this.backface = backface;
+        this.uvs = uvs;
     }
 
-    public static Triangle? Make(Vector3 a, Vector3 b, Vector3 c, IMaterial material)
+    public static Triangle? Make(
+        Vector3 a, Vector3 b, Vector3 c, 
+        IMaterial material,
+        Vector2[] uvs
+    )
     {
         // Baldwin intersection method
         Vector3 ba = b - a, ca = c - a;
@@ -35,6 +39,7 @@ internal class Triangle : IHasBoundingBox
         if (Math.Abs(normal.Z) > Math.Abs(normal.Y) && Math.Abs(normal.Z) > Math.Abs(normal.X))
             free = new(0, 0, 1);
 
+        // transforms a->0,0  b->1,0  c->0,1
         Matrix4x4 forward = new(
             ba.X, ca.X, free.X, a.X,
             ba.Y, ca.Y, free.Y, a.Y,
@@ -49,7 +54,7 @@ internal class Triangle : IHasBoundingBox
         return new(backward, forward, normal, material, new(
             Util.Min(a, b, c),
             Util.Max(a, b, c)
-        ));
+        ), uvs);
     }
 
     public AABB BoundingBox { get; }
@@ -80,6 +85,7 @@ internal class Triangle : IHasBoundingBox
             rec.T = tsol;
             rec.SetFaceNormal(r, normal);
             rec.Material = material;
+            rec.uv = uvs[0] * (1 - x - y) + uvs[1] * x + uvs[2] * y;
             return true;
         }
 

@@ -4,11 +4,15 @@ namespace raytracer;
 
 internal class Lambertian : IMaterial
 {
-    public Vector3 Color;
+    public ITexture albedo;
 
-    public Lambertian(Vector3 color)
+    public Lambertian(ITexture albedo)
     {
-        Color = color;
+        this.albedo = albedo;
+    }
+
+    public Lambertian(Vector3 albedo):this(new SolidColor(albedo))
+    {
     }
 
     public bool Scatter(in Ray rayIn, in HitInfo hit, out Ray rayout)
@@ -27,6 +31,6 @@ internal class Lambertian : IMaterial
 
     Vector3 IMaterial.Color(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn)
     {
-        return colorIn * Color;
+        return colorIn * albedo.Sample(hitInfo.uv);
     }
 }

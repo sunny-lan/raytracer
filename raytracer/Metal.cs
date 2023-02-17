@@ -38,6 +38,6 @@ internal class Light : Lambertian, IMaterial
 
     Vector3 IMaterial.Color(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn)
     {
-        return colorIn + Color;
+        return colorIn + albedo.Sample(hitInfo.uv);
     }
 }
