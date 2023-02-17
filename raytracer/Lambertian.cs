@@ -11,7 +11,7 @@ internal class Lambertian : IMaterial
         Color = color;
     }
 
-    public bool Scatter(Ray rayIn, HitInfo hit, out Ray rayout)
+    public bool Scatter(in Ray rayIn, in HitInfo hit, out Ray rayout)
     {
         var scatterDir = hit.Normal + Util.RandomInUnitSphere();
 
@@ -25,7 +25,7 @@ internal class Lambertian : IMaterial
         return true;
     }
 
-    Vector3 IMaterial.Color(Ray rayIn, HitInfo hitInfo, Vector3 colorIn)
+    Vector3 IMaterial.Color(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn)
     {
         return colorIn * Color;
     }

@@ -11,7 +11,7 @@ internal class Metal : IMaterial
         Color = color;
     }
 
-    public bool Scatter(Ray rayIn, HitInfo hit, out Ray rayout)
+    public bool Scatter(in Ray rayIn, in HitInfo hit, out Ray rayout)
     {
         var scatterDir = rayIn.Direction - 2 * hit.Normal * Vector3.Dot(rayIn.Direction, hit.Normal);
 
@@ -19,7 +19,7 @@ internal class Metal : IMaterial
         return true;
     }
 
-    Vector3 IMaterial.Color(Ray rayIn, HitInfo hitInfo, Vector3 colorIn)
+    Vector3 IMaterial.Color(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn)
     {
         return colorIn * Color;
     }
@@ -31,12 +31,12 @@ internal class Light : Lambertian, IMaterial
     {
     }
 
-    bool IMaterial.Scatter(Ray rayIn, HitInfo hitInfo, out Ray rayout)
+    bool IMaterial.Scatter(in Ray rayIn, in HitInfo hitInfo, out Ray rayout)
     {
         return base.Scatter(rayIn,hitInfo,out rayout); 
     }
 
-    Vector3 IMaterial.Color(Ray rayIn, HitInfo hitInfo, Vector3 colorIn)
+    Vector3 IMaterial.Color(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn)
     {
         return colorIn + Color;
     }

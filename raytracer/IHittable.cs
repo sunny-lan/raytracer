@@ -10,7 +10,7 @@ struct HitInfo
     public bool FrontFace;
     public IMaterial Material;
 
-    public void SetFaceNormal(Ray r, Vector3 outNormal)
+    public void SetFaceNormal(in Ray r, in Vector3 outNormal)
     {
         FrontFace = Vector3.Dot(r.Direction, outNormal) < 0;
         Normal = FrontFace ? outNormal : -outNormal;
@@ -19,5 +19,10 @@ struct HitInfo
 
 internal interface IHittable
 {
-    bool Hit(Ray r, double tmin, double tmax, out HitInfo rec);
+    bool Hit(in Ray r, double tmin, double tmax, out HitInfo rec);
+}
+
+internal interface IHasBoundingBox : IHittable
+{
+    public AABB BoundingBox { get; }
 }

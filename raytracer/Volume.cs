@@ -15,7 +15,7 @@ internal class Volume : IHittable
         this.density = density;
     }
 
-    public bool Hit(Ray r, double tmin, double tmax, out HitInfo rec)
+    public bool Hit(in Ray r, double tmin, double tmax, out HitInfo rec)
     {
         rec = new();
 
@@ -52,7 +52,7 @@ internal class Volume : IHittable
 
         double scatter = Math.Log(1 + Util.rng.NextDouble()) / density;
         double scatterT = scatter + tmin;
-        if (tmin + scatter > tmax)
+        if (scatterT > tmax)
             return false;
 
         rec.T = scatterT;
@@ -65,6 +65,18 @@ internal class Volume : IHittable
     }
 }
 
+
+internal class BoundedVolume : Volume, IHasBoundingBox
+{
+    public BoundedVolume(IHasBoundingBox boundary, double density, IMaterial material) : base(boundary, density, material)
+    {
+        Boundary = boundary;
+    }
+
+    public AABB BoundingBox => Boundary.BoundingBox;
+    public IHasBoundingBox Boundary { get; }
+}
+
 internal class VolumeMaterial : IMaterial
 {
     public Vector3 albedo;
@@ -74,12 +86,12 @@ internal class VolumeMaterial : IMaterial
         this.albedo = albedo;
     }
 
-    public Vector3 Color(Ray rayIn, HitInfo hitInfo, Vector3 colorIn)
+    public Vector3 Color(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn)
     {
         return colorIn * albedo;
     }
 
-    public bool Scatter(Ray rayIn, HitInfo hitInfo, out Ray rayout)
+    public bool Scatter(in Ray rayIn, in HitInfo hitInfo, out Ray rayout)
     {
         rayout.Position = hitInfo.Position;
         rayout.Direction = Util.RandomInUnitSphere();

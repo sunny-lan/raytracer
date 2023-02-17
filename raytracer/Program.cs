@@ -8,7 +8,7 @@ var width = 800;
 var height = 400;
 var aspRatio = width / (double)height;
 
-Vector3 origin = new(3, 3,2), lookAt = new Vector3(0, 0, -1);
+Vector3 origin = new(3, 3, 2), lookAt = new Vector3(0, 0, -1);
 Camera camera = new(
     fov: 30,
     aspect: aspRatio,
@@ -16,24 +16,25 @@ Camera camera = new(
     up: new Vector3(0, 1, 0),
     origin,
     aperture: 0.1,
-    focusDist: (lookAt-origin).Length()
+    focusDist: (lookAt - origin).Length()
 );
 
 
 using Bitmap bmp = new Bitmap(width, height);
 
 
-HittableList world = new();
+List<IHasBoundingBox> objects=new();
 
-world.Objects.Add(new Sphere(new(0, 0, -1), 0.3, new Light(new(5, 0, 0.5))));
-//world.Objects.Add(new Sphere(new(0.5, -0.1, -1.5), 0.6, new Metal(new(0.6, 0.6, 0.05))));
-//world.Objects.Add(new Sphere(new(-3, 0, -2), 0.3, new Lambertian(new(0.01, 0.5, 0.05))));
-world.Objects.Add(new Sphere(new(0, -100.5, -1), 100, new Lambertian(new(0.2, 0.2, 0.2))));
+objects.Add(new Sphere(new(0, 0, -1), 0.3, new Light(new(5, 0, 0.5))));
+objects.Add(new Sphere(new(0.5, -0.1, -1.5), 0.6, new Metal(new(0.6, 0.6, 0.05))));
+objects.Add(new Sphere(new(-3, 0, -2), 0.3, new Lambertian(new(0.01, 0.5, 0.05))));
+objects.Add(new Sphere(new(0, -100.5, -1), 100, new Lambertian(new(0.2, 0.2, 0.2))));
+objects.Add(new BoundedVolume(new Sphere(new(0, 0, 0), 10, null), 0.1, new VolumeMaterial(new(0.8, 0.8, 0.8))));
 
 Vector3 center = new(0, 0.3, -3);
-for(int i = 0; i < 25; i++)
+for (int i = 0; i < 25; i++)
 {
-    var offset = (Util.RandomV3() * 2 - Vector3.One) * new Vector3(3,  0.1,3);
+    var offset = (Util.RandomV3() * 2 - Vector3.One) * new Vector3(3, 0.1, 3);
     var color = Util.RandomV3();
 
     IMaterial mat = Util.rng.NextDouble() switch
@@ -44,12 +45,15 @@ for(int i = 0; i < 25; i++)
     };
 
     var sphere = new Sphere(offset + center, Util.rng.NextDouble() * 0.5 + 0.1, mat);
-    world.Objects.Add(Util.rng.NextDouble() switch
+    objects.Add(Util.rng.NextDouble() switch
     {
-        < 0.3 => new Volume(sphere, Util.rng.NextDouble()*10, new VolumeMaterial(color)),
+        < 0.3 => new BoundedVolume(sphere, Util.rng.NextDouble() * 10, new VolumeMaterial(color)),
         _ => sphere,
     });
 }
+objects.Add(new Triangle(new(1, 0, 0), new(0, 0, 1), new(0, 0, 0), new Light(new(1, 2, 3))));
+
+IHittable world =  new BVH(objects.ToArray());
 
 Vector3 RayColor(Ray r, int depth)
 {
@@ -72,7 +76,7 @@ Vector3 RayColor(Ray r, int depth)
 
     Vector3 unit_direction = r.Direction.Normalized();
     var t = 0.5 * (unit_direction.Y + 1.0);
-    return (1.0 - t) * Vector3.One + t * new Vector3(0.5, 0.7, 1.0)*2;
+    return (1.0 - t) * Vector3.One * 0.5 + t * new Vector3(0.5, 0.7, 1.0) * 0.5;
 }
 
 int samples = 100;

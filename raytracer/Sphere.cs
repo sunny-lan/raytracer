@@ -2,7 +2,7 @@
 
 namespace raytracer;
 
-internal class Sphere : IHittable
+internal class Sphere : IHasBoundingBox
 {
     public Vector3 Center;
     public double Radius;
@@ -13,18 +13,24 @@ internal class Sphere : IHittable
         Center = center;
         Radius = radius;
         Material = material;
+        BoundingBox = new(
+            center - radius * Vector3.One,
+            center + radius * Vector3.One
+        );
     }
 
-    public bool Hit(Ray r, double tmin, double tmax, out HitInfo rec)
+    public AABB BoundingBox { get; }
+
+    public bool Hit(in Ray r, double tmin, double tmax, out HitInfo rec)
     {
-       // r.Position -= Center;
+        // r.Position -= Center;
 
         // p(t) = Pos + t*Dir
         // p(t) . p(t) = r^2
         // t^2 Dir . Dir + 2t Pos . Dir + Pos . Pos - r^2 = 0 
         double a = Vector3.Dot(r.Direction, r.Direction),
-               b = 2 * Vector3.Dot(r.Position-Center, r.Direction),
-               c = Vector3.Dot(r.Position-Center, r.Position-Center) - Radius * Radius;
+               b = 2 * Vector3.Dot(r.Position - Center, r.Direction),
+               c = Vector3.Dot(r.Position - Center, r.Position - Center) - Radius * Radius;
 
         double disc = b * b - 4 * a * c;
         rec = new HitInfo();
@@ -45,7 +51,7 @@ internal class Sphere : IHittable
 
             rec.T = root;
             rec.Position = r.At(root);
-            rec.SetFaceNormal(r, (rec.Position-Center) / Radius);
+            rec.SetFaceNormal(r, (rec.Position - Center) / Radius);
             rec.Material = Material;
             return true;
         }

@@ -4,7 +4,7 @@ namespace raytracer;
 
 internal interface IMaterial
 {
-    bool Scatter(Ray rayIn, HitInfo hitInfo, out Ray rayout);
+    bool Scatter(in Ray rayIn, in HitInfo hitInfo, out Ray rayout);
 
-    Vector3 Color(Ray rayIn, HitInfo hitInfo, Vector3 colorIn);
+    Vector3 Color(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn);
 }

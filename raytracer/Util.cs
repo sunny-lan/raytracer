@@ -63,4 +63,47 @@ internal static class Util
             if (res.LengthSquared() <= 1) return res;
         }
     }
+
+    public static double Index(this Vector3 v, int index)
+    {
+        return index switch
+        {
+            0 => v.X,
+            1 => v.Y,
+            2 => v.Z,
+            _ => throw new ArgumentException(),
+        };
+    }
+
+    public static void Swap<T>(ref T a, ref T b)
+    {
+        T tmp = a;
+        a = b;
+        b = tmp;
+    }
+    public static Vector3 Min(Vector3 a, Vector3 b, Vector3 c)
+    {
+        return Min(Min(a, b), c);
+    }
+    public static Vector3 Max(Vector3 a, Vector3 b, Vector3 c)
+    {
+        return Max(Max(a, b), c);
+    }
+
+    public static Vector3 Min(Vector3 a, Vector3 b)
+    {
+        return new(
+             Math.Min(a.X, b.X),
+             Math.Min(a.Y, b.Y),
+             Math.Min(a.Z, b.Z)
+        );
+    }
+    public static Vector3 Max(Vector3 a, Vector3 b)
+    {
+        return new(
+             Math.Max(a.X, b.X),
+             Math.Max(a.Y, b.Y),
+             Math.Max(a.Z, b.Z)
+        );
+    }
 }
