@@ -8,27 +8,60 @@ internal class Triangle : IHasBoundingBox
     readonly Vector3 normal;
     readonly IMaterial material;
     readonly Vector2[] uvs;
+    private readonly Vector3[] normals;
+    readonly ITexture1? bumpMap;
 
     Triangle(
-        in Matrix4x4 backward, 
-        in Matrix4x4 forward, 
-        in Vector3 normal, 
-        in IMaterial material, 
-        in AABB boundingBox, 
-        in Vector2[] uvs)
+        in Vector3 a, 
+        in Vector3 b, 
+        in Vector3 c,
+        in Vector3 normal,
+        in Vector3 ba, 
+        in Vector3 ca,
+        in IMaterial material,
+        in Vector2[] uvs,
+        in Vector3[] normals,
+        in ITexture1? bumpMap)
     {
-        this.backward = backward;
-        this.forward = forward;
         this.normal = normal;
         this.material = material;
-        BoundingBox = boundingBox;
         this.uvs = uvs;
+        this.normals = normals;
+        this.bumpMap = bumpMap;
+
+
+        Vector3 free = new(1, 0, 0);
+        if (Math.Abs(normal.Y) > Math.Abs(normal.X))
+            free = new(0, 1, 0);
+        if (Math.Abs(normal.Z) > Math.Abs(normal.Y) && Math.Abs(normal.Z) > Math.Abs(normal.X))
+            free = new(0, 0, 1);
+
+        // transforms a->0,0  b->1,0  c->0,1
+        forward = new(
+            ba.X, ca.X, free.X, a.X,
+            ba.Y, ca.Y, free.Y, a.Y,
+            ba.Z, ca.Z, free.Z, a.Z,
+            0, 0, 0, 1
+        );
+        forward = Matrix4x4.Transpose(forward);
+
+        if (!Matrix4x4.Invert(forward, out backward))
+            throw new ArgumentException("Could not invert triangle transform");
+
+        BoundingBox = new(
+            Util.Min(a, b, c),
+            Util.Max(a, b, c)
+        );
     }
 
     public static Triangle? Make(
-        Vector3 a, Vector3 b, Vector3 c, 
-        IMaterial material,
-        Vector2[] uvs
+        in Vector3 a, 
+        in Vector3 b, 
+        in Vector3 c, 
+        in IMaterial material,
+        in Vector2[] uvs,
+        in Vector3[] normals,
+        in ITexture1? bumpMap = null
     )
     {
         // Baldwin intersection method
@@ -39,28 +72,7 @@ internal class Triangle : IHasBoundingBox
         if (normal.NearZero()) return null;
         normal = normal.Normalized();
 
-        Vector3 free = new(1, 0, 0);
-        if (Math.Abs(normal.Y) > Math.Abs(normal.X))
-            free = new(0, 1, 0);
-        if (Math.Abs(normal.Z) > Math.Abs(normal.Y) && Math.Abs(normal.Z) > Math.Abs(normal.X))
-            free = new(0, 0, 1);
-
-        // transforms a->0,0  b->1,0  c->0,1
-        Matrix4x4 forward = new(
-            ba.X, ca.X, free.X, a.X,
-            ba.Y, ca.Y, free.Y, a.Y,
-            ba.Z, ca.Z, free.Z, a.Z,
-            0, 0, 0, 1
-        );
-        forward = Matrix4x4.Transpose(forward);
-
-        if (!Matrix4x4.Invert(forward, out var backward))
-            throw new ArgumentException("Could not invert triangle transform");
-
-        return new(backward, forward, normal, material, new(
-            Util.Min(a, b, c),
-            Util.Max(a, b, c)
-        ), uvs);
+        return new(a, b, c, normal, ba, ca, material, uvs, normals, bumpMap);
     }
 
     public AABB BoundingBox { get; }
@@ -87,11 +99,18 @@ internal class Triangle : IHasBoundingBox
             y is >= 0 and <= 1 &&
             x + y <= 1)
         {
+            rec.Material = material;
             rec.Position = r.At(tsol);
             rec.T = tsol;
-            rec.SetFaceNormal(r, normal);
-            rec.Material = material;
             rec.uv = uvs[0] * (1 - x - y) + uvs[1] * x + uvs[2] * y;
+
+            Vector3 normal;
+            if (bumpMap is not null)
+                normal = bumpMap.Normal(rec.uv);
+            else
+                normal = normals[0] * (1 - x - y) + normals[1] * x + normals[2] * y;
+            rec.SetFaceNormal(r, normal);
+
             return true;
         }
 

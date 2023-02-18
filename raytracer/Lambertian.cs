@@ -4,9 +4,9 @@ namespace raytracer;
 
 internal class Lambertian : IMaterial
 {
-    public ITexture albedo;
+    public ITexture3 albedo;
 
-    public Lambertian(ITexture albedo)
+    public Lambertian(ITexture3 albedo)
     {
         this.albedo = albedo;
     }
