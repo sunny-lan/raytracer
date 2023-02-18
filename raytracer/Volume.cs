@@ -86,7 +86,7 @@ internal class VolumeMaterial : IMaterial
         this.albedo = albedo;
     }
 
-    public Vector3 Color(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn)
+    public Vector3 Reflect(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn, in Ray raySrc)
     {
         return colorIn * albedo;
     }

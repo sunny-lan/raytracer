@@ -19,25 +19,8 @@ internal class Metal : IMaterial
         return true;
     }
 
-    Vector3 IMaterial.Color(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn)
+    Vector3 IMaterial.Reflect(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn, in Ray raySrc)
     {
         return colorIn * Color;
-    }
-}
-
-internal class Light : Lambertian, IMaterial
-{
-    public Light(Vector3 color):base(color)
-    {
-    }
-
-    bool IMaterial.Scatter(in Ray rayIn, in HitInfo hitInfo, out Ray rayout)
-    {
-        return base.Scatter(rayIn,hitInfo,out rayout); 
-    }
-
-    Vector3 IMaterial.Color(in Ray rayIn, in HitInfo hitInfo, in Vector3 colorIn)
-    {
-        return colorIn + albedo.Sample(hitInfo.uv);
     }
 }
