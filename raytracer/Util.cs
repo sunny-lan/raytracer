@@ -27,8 +27,22 @@ internal static class Util
         );
     }
 
+    [ThreadStatic]
+    static Random? rand;
+    static object _lck=new();
 
-    public static readonly Random rng = new Random(69420);
+    public static Random rng
+    {
+        get
+        {
+            if(rand == null)
+            {
+                lock (_lck)
+                    rand = new();
+            }
+            return rand;
+        }
+    }
 
     public static Vector3 RandomV3()
     {

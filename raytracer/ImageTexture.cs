@@ -17,8 +17,8 @@ public class ImageTexture : ITexture
     {
         Vector2 coords = uv * new Vector2(image.Width, image.Height);
         var pixel = image[
-            (int)Math.Round(image.Width - coords.X),
-            (int)Math.Round(coords.Y)
+            (int)Math.Round(coords.X),
+            (int)Math.Round(image.Height - coords.Y)
         ].ToScaledVector4();
         return new Vector3(pixel.X, pixel.Y, pixel.Z);
     }

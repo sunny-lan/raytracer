@@ -9,7 +9,13 @@ internal class Triangle : IHasBoundingBox
     readonly IMaterial material;
     readonly Vector2[] uvs;
 
-    Triangle(Matrix4x4 backward, Matrix4x4 forward, Vector3 normal, IMaterial material, AABB boundingBox, Vector2[] uvs)
+    Triangle(
+        in Matrix4x4 backward, 
+        in Matrix4x4 forward, 
+        in Vector3 normal, 
+        in IMaterial material, 
+        in AABB boundingBox, 
+        in Vector2[] uvs)
     {
         this.backward = backward;
         this.forward = forward;
