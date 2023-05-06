@@ -16,12 +16,10 @@ Simple raytracer following Raytracing In a Weekend. Features:
 
 ## Images
 
-**![](https://lh5.googleusercontent.com/eeBI9eDkw6aVSy8nAeoRQh7OAPwF5c47_Y03mt-fmMxT0mMioa4Y4ey_Lgds9Wc_1jLPrvCNgdV8FCIVrZyMOFJTWMz33iUQr9srwcw_PDiRXpX-kfYqNjtAONIKWt0al4G9dUWfdZiq4xlVh8aFJgnKkA=s2048)****![](https://lh3.googleusercontent.com/pkoq_okYA2OoeJfrsz4slRz1Dx65W0tAfufU42Mb0PWRErtoKBmq5iqod1TTp03jMZ1hZH_lh9UoAoiBslKnN0cwXo8YqeJsQf_uuFSyYR_cQYwiVqhhqf48RHfHtJZIaWHp3-Yqswm7FJ8Ep9_N6q4qvQ=s2048)
+![image](https://user-images.githubusercontent.com/14915260/236644356-8a44acfc-f444-4a47-ac2f-7c6903276082.png)
 
-**
+![image](https://user-images.githubusercontent.com/14915260/236644369-3011579c-2368-4954-b479-8aa40c7a5f9d.png)
 
-![](https://lh3.googleusercontent.com/73DB1JESeaXh6Q90VPia9dAk4obS227UCemHhXpcVPT-HOgaAy4FRtuvB0sQbqacshBenzEBCTg-9NXhYD5K0swK9SXFN47EsjVIDXgoez1VvXaBBC3fheyDmclyHnflqITfgsf4l6kkcYFPIZToVF37BQ=s2048)
+![image](https://user-images.githubusercontent.com/14915260/236644374-82d45a4e-ea94-46ef-8b53-d5a463a70d46.png)
 
-**![](https://lh6.googleusercontent.com/LjuOjziFG9aJWddP0bH9P_g-4z6IIAXkxCvALu_J8sQ3OpNbZrsG50PdFgywihBj9lmx91sgz3yMuIlholZtKvadgWKA1sUTBS3nA43tzOdRi8XhAMl8MaigXQ6AQo4fwiqn6JOP8RbflcsXDvhgn2WlkA=s2048)******
-
-![](https://lh6.googleusercontent.com/8qkjdItvxjrMmJn-e2cyKXs_Aclfag2a0IaUbCMVU8G5e2pBC80k6noavBBY6WolIZwHfRy7ITCykbWKyERKuensA6DcYn9k0tLhPk5itdohqSgTWKpTzymoQa9uYJDmQ4SZwFxMf4KdqVBYszgpufRTgQ=s2048)
+![image](https://user-images.githubusercontent.com/14915260/236644383-7457737e-e892-4047-9329-cd0f19ddc9f5.png)
